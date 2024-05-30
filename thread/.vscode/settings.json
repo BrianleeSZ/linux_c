@@ -1,0 +1,10 @@
+{
+    "cmake.configureOnOpen": true,
+    "files.associations": {
+        "thread": "cpp"
+    },
+    {
+        "editor.formatOnSave": true,
+        "editor.defaultFormatter": "seaube.clangformat"
+    }
+}

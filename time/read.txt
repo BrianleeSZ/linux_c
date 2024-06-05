@@ -1,0 +1,57 @@
+一、定时器：
+1、处理大量延时任务的模块
+2、组织大量的定时任务
+3、提供一个不占用线程的方式检测处理定时任务
+
+二、组织定时器任务
+1、按时间序
+    红黑树：nginx \ workflow
+    最小堆：libevent\libev\go
+2、按执行序
+    时间轮  netty\skynet\kafka\内核
+
+三、定时器检测方式
+    timerfd\epoll_wait\usleep
+    1、timerfd                      从内核角度，timerfd方式效率更高一些，相对于epoll_wait第四个参数timeout的方式
+        timerfd_create              创建一个fd
+        timerfd_settime             设置最近要触发的定时任务；如果内核检测时间过期，以事件的方式通知
+        timerfd_gettime             查询fd 最近要触发的定时任务，还有多久要触发
+        timerfd_read
+    2、epoll_wait
+        epoll_create
+        epoll_ctl
+        epoll_wait
+        timeout参数：通常选择 最近要触发的定时任务 - 当前时间
+    3、usleep
+        usleep
+        nanosleep
+        select
+        poll
+        epoll_wait
+        epoll_pwait
+        epoll_ctl
+        epoll_create
+四、如何使用定时器
+    1、一个定时器对应一个fd
+    2、select\poll\eopll帮助检测该fd是否就绪
+    3、写一个demo
+    具体接口
+    stl容器选择：
+        红黑树：set\map\multimap\multiset
+        最小堆：优先级队列，不支持删除操作，每次删除需要重新构建堆结构
+        STL 比较key 值，比较器
+        STL 容器选择：
+            set\map\multimap\multiset
+            优先级队列
+            红黑树
+            最小堆
+            STL 比较key 值，比较器
+           
+    1、创建定时器
+    2、添加定时器
+    3、删除定时器
+    4、修改定时器
+    5、定时器到期处理
+    6、销毁定时器
+    7、定时器到期处理
+  

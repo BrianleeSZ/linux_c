@@ -3,6 +3,9 @@
 #include <functional>
 #include <chrono>
 #include <set>
+#include <sys/epoll.h>
+#include <memory>
+#include <unistd.h>
 using namespace std;
 
 struct TimerBaseNode{
@@ -71,6 +74,20 @@ public:
         }
         
     }
+
+    int TimeToSleep(){
+        auto iter = timeouts.begin();
+        if (iter == timeouts.end())
+        {
+            return -1;
+        }
+        else
+        {
+            int diss = iter->expire - GetTick();
+            return diss > 0 ? diss : 0;
+        }
+    }
+
 private:
     static inline int64_t GenID(){
         return gid++;
@@ -80,6 +97,24 @@ private:
 };
 
 int main(){
+    int epfd = epoll_create(1);;
+    unique_ptr<Timer> timer = make_unique<Timer>();
 
+    epoll_event ev[256]={0};
+
+    while (true)
+    {
+        int n = epoll_wait(epfd,ev,256, timer->TimeToSleep());
+        time_t now = Timer::GetTick();
+        for (int i = 0; i < n; i++)
+        {
+            //处理网络事件
+        }
+        //处理定时事件
+        timer->HandleTimer(now);
+    }
+    
+    close(epfd);
+    
     return 0;
 }
